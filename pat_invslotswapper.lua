@@ -12,7 +12,7 @@ function init()
   end
 
   swaps = {}
-  swapTime = 0.2
+  swapTime = 0.25
   swapTimer = 0
 
   for _, cfg in pairs(bags) do
@@ -29,15 +29,28 @@ end
 function update(dt)
   if swapTimer <= 0 then
     swapTimer = 1
+
+    for bag, swap in pairs(swaps) do
+      invWidget.setPosition(swap.w1, swap.p1)
+      invWidget.setPosition(swap.w2, swap.p2)
+      local bs1, bs2 = {bag, swap.s1 - 1}, {bag, swap.s2 - 1}
+      local i1, i2 = player.item(bs1), player.item(bs2)
+      player.setItem(bs1, i2)
+      player.setItem(bs2, i1)
+    end
+    
     for bag, cfg in pairs(bags) do
-      local w1 = cfg.slots[math.random(cfg.size)]
+      local s1 = math.random(cfg.size)
       ::retry::
-      local w2 = cfg.slots[math.random(cfg.size)]
-      if w1 == w2 then goto retry end
+      local s2 = math.random(cfg.size)
+      if s1 == s2 then goto retry end
+
+      local w1 = cfg.slots[s1]
+      local w2 = cfg.slots[s2]
 
       swaps[bag] = {
-        w1 = w1,
-        w2 = w2,
+        s1 = s1, w1 = w1,
+        s2 = s2, w2 = w2,
         p1 = invWidget.getPosition(w1),
         p2 = invWidget.getPosition(w2)
       }
