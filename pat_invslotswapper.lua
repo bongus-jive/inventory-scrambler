@@ -11,8 +11,10 @@ function init()
     cfg.itemGrid = invBagCfg[bag].itemGrid
   end
 
+  barIndexes = root.assetJson("/player.config:inventory.customBarIndexes")
+
   swaps = {}
-  swapTime = 0.25
+  swapTime = 0.33
   swapTimer = 0
 
   for _, cfg in pairs(bags) do
@@ -30,15 +32,41 @@ function update(dt)
   if swapTimer <= 0 then
     swapTimer = 1
 
+    local links = {}
+    local function addLink(index, hand) 
+      local slot = player.actionBarSlotLink(index, hand)
+      if not slot then return end
+      links[#links + 1] = {index = index, hand = hand, slot = slot}
+    end
+    for i = 1, barIndexes do
+      addLink(i, "primary")
+      addLink(i, "alt")
+    end
+
     for bag, swap in pairs(swaps) do
       invWidget.setPosition(swap.w1, swap.p1)
       invWidget.setPosition(swap.w2, swap.p2)
+
       local bs1, bs2 = {bag, swap.s1 - 1}, {bag, swap.s2 - 1}
-      local i1, i2 = player.item(bs1), player.item(bs2)
-      player.setItem(bs1, i2)
-      player.setItem(bs2, i1)
+      local item1, item2 = player.item(bs1), player.item(bs2)
+
+      local links1, links2 = {}, {}
+      for _, link in pairs(links) do
+        if not item2 and vec2.eq(link.slot, bs1) then links1[#links1 + 1] = link end
+        if not item1 and vec2.eq(link.slot, bs2) then links2[#links2 + 1] = link end
+      end
+
+      player.setItem(bs1, item2)
+      player.setItem(bs2, item1)
+
+      for _, link in pairs(links1) do
+        player.setActionBarSlotLink(link.index, link.hand, bs2)
+      end
+      for _, link in pairs(links2) do
+        player.setActionBarSlotLink(link.index, link.hand, bs1)
+      end
     end
-    
+
     for bag, cfg in pairs(bags) do
       local s1 = math.random(cfg.size)
       ::retry::
