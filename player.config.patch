@@ -1,5 +1,7 @@
-{
-  "genericScriptContexts": {
-    "pat_invslotswapper": "/pat_invslotswapper.lua"
+[
+  {
+    "op": "add",
+    "path": "/genericScriptContexts/pat_invslotswapper",
+    "value": "/pat_invslotswapper.lua"
   }
-}
+]
