@@ -5,13 +5,13 @@ function init()
   local invPane = interface.bindRegisteredPane("inventory")
   invWidget = invPane.toWidget()
   
-  bags = root.assetJson("/player.config:inventory.itemBags")
+  local invPlrCfg = root.assetJson("/player.config:inventory")
   local invBagCfg = root.assetJson("/interface/windowconfig/playerinventory.config:bagConfig")
+  barIndexes, barGroups = invPlrCfg.customBarIndexes, invPlrCfg.customBarGroups
+  bags = invPlrCfg.itemBags
   for bag, cfg in pairs(bags) do
     cfg.itemGrid = invBagCfg[bag].itemGrid
   end
-
-  barIndexes = root.assetJson("/player.config:inventory.customBarIndexes")
 
   swaps = {}
   swapTime = 0.33
@@ -83,44 +83,75 @@ end
 
 function finishSwaps()
   local links = getSlotLinks()
+  local currentGroup = player.actionBarGroup()
+
+  local restoreLinks = {}
+  local function addRestore(link)
+    local t = restoreLinks[link.group]
+    if not t then
+      t = {}
+      restoreLinks[link.group] = t
+    end
+    t[#t + 1] = link
+  end
 
   for _, swap in pairs(swaps) do
     local slot1, slot2 = swap[1], swap[2]
+    local item1, item2 = player.item(slot1.slot), player.item(slot2.slot)
 
     invWidget.setPosition(slot1.widgetName, slot1.widgetPos)
     invWidget.setPosition(slot2.widgetName, slot2.widgetPos)
 
-    local item1, item2 = player.item(slot1.slot), player.item(slot2.slot)
-    local links1, links2 = {}, {}
-    
     for _, link in pairs(links) do
-      if not item2 and vec2.eq(link.slot, slot1.slot) then links1[#links1 + 1] = link end
-      if not item1 and vec2.eq(link.slot, slot2.slot) then links2[#links2 + 1] = link end
+      if not item2 and vec2.eq(link.slot, slot1.slot) then
+        link.slot = slot2.slot
+        addRestore(link)
+      elseif not item1 and vec2.eq(link.slot, slot2.slot) then
+        link.slot = slot1.slot
+        addRestore(link)
+      end
     end
 
     player.setItem(slot1.slot, item2)
     player.setItem(slot2.slot, item1)
-
-    for _, link in pairs(links1) do
-      player.setActionBarSlotLink(link.index, link.hand, slot2.slot)
-    end
-    for _, link in pairs(links2) do
-      player.setActionBarSlotLink(link.index, link.hand, slot1.slot)
-    end
   end
+
+  local g = currentGroup
+  for _ = 1, barGroups do
+    g = g + 1
+    if g > barGroups then g = 1 end
+    
+    local t = restoreLinks[g]
+    if not t then goto continue end
+
+    player.setActionBarGroup(g)
+    for _, link in pairs(t) do
+      player.setActionBarSlotLink(link.index, link.hand, link.slot)
+    end
+    ::continue::
+  end
+  
+  player.setActionBarGroup(currentGroup)
 end
 
 function getSlotLinks()
   local links = {}
-  local function addLink(index, hand) 
+  local function addLink(group, index, hand) 
     local slot = player.actionBarSlotLink(index, hand)
     if not slot then return end
-    links[#links + 1] = {index = index, hand = hand, slot = slot}
+    links[#links + 1] = {group = group, index = index, hand = hand, slot = slot}
   end
 
-  for i = 1, barIndexes do
-    addLink(i, "primary")
-    addLink(i, "alt")
+  local g = player.actionBarGroup()
+  for _ = 1, barGroups do
+    g = g + 1
+    if g > barGroups then g = 1 end
+    player.setActionBarGroup(g)
+
+    for i = 1, barIndexes do
+      addLink(g, i, "primary")
+      addLink(g, i, "alt")
+    end
   end
 
   return links
