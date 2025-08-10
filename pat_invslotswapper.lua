@@ -1,14 +1,7 @@
+require "/scripts/vec2.lua"
+require "/scripts/util.lua"
+
 function init()
-  if not interface or not interface.bindRegisteredPane then
-    init, update, uninit, makeSwaps, finishSwaps, getSlotLinks = nil, nil, nil, nil, nil, nil
-    if script.updateDt() ~= 0 then sb.logWarn("'inventory scrambler' requires OpenStarbound") end
-    script.setUpdateDelta(0)
-    return
-  end
-
-  require "/scripts/vec2.lua"
-  require "/scripts/util.lua"
-
   local invPane = interface.bindRegisteredPane("inventory")
   invWidget = invPane.toWidget()
   

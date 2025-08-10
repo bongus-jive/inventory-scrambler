@@ -1,5 +1,9 @@
 [
   {
+    "op": "test",
+    "path": "/genericScriptContexts/OpenStarbound"
+  },
+  {
     "op": "add",
     "path": "/genericScriptContexts/pat_invslotswapper",
     "value": "/pat_invslotswapper.lua"
