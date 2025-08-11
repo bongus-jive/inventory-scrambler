@@ -1,11 +1,11 @@
 {
   "author" : "patman",
-  "description" : "fucks up your inventory. requires openstarbound\n",
+  "description" : "fucks up your inventory. requires openstarbound\n\nadjust settings with /invscrambler\n",
   "friendlyName" : "inventory scrambler [OpenSB]",
   "link" : "steam://url/CommunityFilePage/3538536096",
   "name" : "pat_invslotswapper",
   "steamContentId" : "3538536096",
-  "steamDescription" : "randomly swaps items around in your inventory because it's funny\n\nrequires [url=https://github.com/OpenStarbound/OpenStarbound]OpenStarbound[img]https://i.imgur.com/GlY6bda.png[/img][/url]\n\n[img]https://i.imgur.com/wXjYMqP.gif[/img]https://discord.gg/GdsQSgV\n[img]https://i.imgur.com/uyG8oTa.gif[/img]https://www.patreon.com/pathiccstar\n[img]https://i.imgur.com/xVfcRRH.gif[/img]https://ko-fi.com/patmanf\n[img]https://i.imgur.com/jJAj6jF.gif[/img]https://github.com/bongus-jive/inventory-scrambler\n",
+  "steamDescription" : "randomly swaps items around in your inventory because it's funny\n\nrequires [url=https://github.com/OpenStarbound/OpenStarbound]OpenStarbound[img]https://i.imgur.com/GlY6bda.png[/img][/url]\n\nyou can do /invscrambler to adjust settings\n\n[img]https://i.imgur.com/wXjYMqP.gif[/img]https://discord.gg/GdsQSgV\n[img]https://i.imgur.com/uyG8oTa.gif[/img]https://www.patreon.com/pathiccstar\n[img]https://i.imgur.com/xVfcRRH.gif[/img]https://ko-fi.com/patmanf\n[img]https://i.imgur.com/jJAj6jF.gif[/img]https://github.com/bongus-jive/inventory-scrambler\n\n[img]https://cdn.discordapp.com/emojis/975242122917728336.gif?size=40[/img] <- give me these",
   "tags" : "Miscellaneous|User Interface|Character Improvements",
-  "version" : "1.0"
+  "version" : "1.1"
 }
